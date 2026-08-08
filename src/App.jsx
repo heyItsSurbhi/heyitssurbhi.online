@@ -1,5 +1,6 @@
+import { useState, useMemo } from 'react';
 import { ThemeProvider, CssBaseline, Box } from '@mui/material';
-import theme from './theme/theme';
+import getTheme from './theme/theme';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -10,11 +11,18 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 
 export default function App() {
+  const [mode, setMode] = useState('dark');
+  const theme = useMemo(() => getTheme(mode), [mode]);
+
+  const toggleMode = () => {
+    setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Box sx={{ minHeight: '100vh', position: 'relative' }}>
-        <Navbar />
+        <Navbar onToggleTheme={toggleMode} currentMode={mode} />
         <Hero />
         <About />
         <Experience />
