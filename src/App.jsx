@@ -1,36 +1,36 @@
-import { useState, useMemo } from 'react';
-import { ThemeProvider, CssBaseline, Box } from '@mui/material';
-import getTheme from './theme/theme';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Experience from './components/Experience';
-import Skills from './components/Skills';
-import Education from './components/Education';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
+import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom';
+import Layout from './components/Layout';
+import { ThemeProvider } from './theme';
+import Home from './pages/Home';
+import CaseStudy from './pages/CaseStudy';
+import Engagement from './pages/Engagement';
+import NotFound from './pages/NotFound';
+import { engagements } from './data/engagements';
+
+function WorkDetail() {
+  const { slug } = useParams();
+  if (engagements.some((item) => item.slug === slug)) return <Engagement />;
+  return <CaseStudy />;
+}
 
 export default function App() {
-  const [mode, setMode] = useState('dark');
-  const theme = useMemo(() => getTheme(mode), [mode]);
-
-  const toggleMode = () => {
-    setMode((prev) => (prev === 'dark' ? 'light' : 'dark'));
-  };
-
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Box sx={{ minHeight: '100vh', position: 'relative' }}>
-        <Navbar onToggleTheme={toggleMode} currentMode={mode} />
-        <Hero />
-        <About />
-        <Experience />
-        <Skills />
-        <Education />
-        <Contact />
-        <Footer />
-      </Box>
+    <ThemeProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<Navigate to="/#about" replace />} />
+          <Route path="/experience" element={<Navigate to="/#experience" replace />} />
+          <Route path="/skills" element={<Navigate to="/#skills" replace />} />
+          <Route path="/education" element={<Navigate to="/#education" replace />} />
+          <Route path="/work" element={<Navigate to="/#work" replace />} />
+          <Route path="/work/:slug" element={<WorkDetail />} />
+          <Route path="/contact" element={<Navigate to="/#contact" replace />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
     </ThemeProvider>
   );
 }
